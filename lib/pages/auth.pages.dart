@@ -6,7 +6,8 @@ class AuthPage extends StatefulWidget {
   _AuthPageState createState() => _AuthPageState();
 }
 
-class _AuthPageState extends State<AuthPage> with SingleTickerProviderStateMixin {
+class _AuthPageState extends State<AuthPage>
+    with SingleTickerProviderStateMixin {
   bool _isLoginActive;
   AnimationController _controller;
   Animation _animation;
@@ -14,28 +15,29 @@ class _AuthPageState extends State<AuthPage> with SingleTickerProviderStateMixin
   FocusNode _focusNode = FocusNode();
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
 
     _isLoginActive = true;
 
-    _controller = AnimationController(vsync: this, duration: Duration(milliseconds: 300));
+    _controller =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 300));
     _animation = Tween(begin: 300.0, end: 50.0).animate(_controller)
-    ..addListener(() { 
-      setState(() { });
-    });
+      ..addListener(() {
+        setState(() {});
+      });
 
     _focusNode.addListener(() {
-      if(_focusNode.hasFocus){
+      if (_focusNode.hasFocus) {
         _controller.forward();
-      }else{
+      } else {
         _controller.reverse();
       }
     });
   }
 
   @override
-  void dispose(){
+  void dispose() {
     _controller.dispose();
     _focusNode.dispose();
 
@@ -45,81 +47,88 @@ class _AuthPageState extends State<AuthPage> with SingleTickerProviderStateMixin
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // resizeToAvoidBottomInset: false,
-      // resizeToAvoidBottomPadding: false,
       body: Center(
-              child: InkWell(
+        child: InkWell(
           splashColor: Colors.transparent,
-          onTap: (){
+          onTap: () {
             FocusScope.of(context).requestFocus(FocusNode());
           },
-          child: Column(
-            // mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              SafeArea(
-                child: Center(
-                  child: Icon(
-                    Icons.lightbulb_outline,
-                    size: 150,
-                    color: HexColor('#88d5cb'),
-                  ),
-                ),
-              ),
-              Container(
-                child:SafeArea(
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical:30),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        FlatButton(
-                          textColor: _isLoginActive? Colors.black : Colors.grey,
-                          disabledTextColor: Colors.black,
-                          padding: EdgeInsets.all(10),
-                          splashColor: Colors.grey,
-                          child:Text(
-                            'Login',
-                            style: TextStyle(
-                              fontSize: _isLoginActive? MediaQuery.of(context).size.width * 0.10 : MediaQuery.of(context).size.width * 0.07,
-                              fontWeight: FontWeight.bold
-                            ),
-                          ),
-                          onPressed: !_isLoginActive? () { 
-                            setState(() {
-                              _isLoginActive = !_isLoginActive;
-                            });
-                           }: null,
-                        ),
-                        FlatButton(
-                          textColor: !_isLoginActive? Colors.black : Colors.grey,
-                          disabledTextColor: Colors.black,
-                          padding: EdgeInsets.all(10),
-                          splashColor: Colors.grey,
-                          child:Text(
-                            'SignUp',
-                            style: TextStyle(
-                              fontSize: !_isLoginActive? MediaQuery.of(context).size.width * 0.10 : MediaQuery.of(context).size.width * 0.07,
-                              fontWeight: FontWeight.bold
-                            ),
-                          ),
-                          onPressed: _isLoginActive? () { 
-                            setState(() {
-                              _isLoginActive = !_isLoginActive;
-                            });
-                           }: null,
-                        )
-                      ],
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                SafeArea(
+                  child: Center(
+                    child: Icon(
+                      Icons.lightbulb_outline,
+                      size: 150,
+                      color: HexColor('#88d5cb'),
                     ),
                   ),
-                ) ,
-              ),
-              login()
-            ],
-
+                ),
+                Container(
+                  child: SafeArea(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          FlatButton(
+                            textColor:
+                                _isLoginActive ? Colors.black : Colors.grey,
+                            disabledTextColor: Colors.black,
+                            padding: EdgeInsets.all(10),
+                            splashColor: Colors.grey,
+                            child: Text(
+                              'Login',
+                              style: TextStyle(
+                                  fontSize: _isLoginActive
+                                      ? MediaQuery.of(context).size.width * 0.10
+                                      : MediaQuery.of(context).size.width * 0.07,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            onPressed: !_isLoginActive
+                                ? () {
+                                    setState(() {
+                                      _isLoginActive = !_isLoginActive;
+                                    });
+                                  }
+                                : null,
+                          ),
+                          FlatButton(
+                            textColor:
+                                !_isLoginActive ? Colors.black : Colors.grey,
+                            disabledTextColor: Colors.black,
+                            padding: EdgeInsets.all(10),
+                            splashColor: Colors.grey,
+                            child: Text(
+                              'SignUp',
+                              style: TextStyle(
+                                  fontSize: !_isLoginActive
+                                      ? MediaQuery.of(context).size.width * 0.10
+                                      : MediaQuery.of(context).size.width * 0.07,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            onPressed: _isLoginActive
+                                ? () {
+                                    setState(() {
+                                      _isLoginActive = !_isLoginActive;
+                                    });
+                                  }
+                                : null,
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                login(),
+                roundedButton('LOGIN'),
+              ],
+            ),
           ),
         ),
-      )
-    );
+      ));
   }
 
   ///Building the Email input for using in the Login and SignUp
@@ -127,21 +136,18 @@ class _AuthPageState extends State<AuthPage> with SingleTickerProviderStateMixin
     Color borderCo = HexColor('#88d5cb');
 
     return Container(
-      padding: EdgeInsets.only(top:35, left:20, right: 20),
+      padding: EdgeInsets.only(top: 35, left: 20, right: 20),
       child: Column(
         children: <Widget>[
           TextField(
             // focusNode: _focusNode,
             decoration: InputDecoration(
               border: UnderlineInputBorder(
-                borderSide: BorderSide(color: borderCo)
-              ),
+                  borderSide: BorderSide(color: borderCo)),
               focusedBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: Colors.grey)
-              ),
+                  borderSide: BorderSide(color: Colors.grey)),
               enabledBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: borderCo)
-              ),
+                  borderSide: BorderSide(color: borderCo)),
               labelText: 'Email',
               labelStyle: TextStyle(
                 fontFamily: 'Arial',
@@ -158,46 +164,70 @@ class _AuthPageState extends State<AuthPage> with SingleTickerProviderStateMixin
   ///Building the Email input for using in the Login and SignUp
   Widget buildPassword() {
     Color borderCo = HexColor('#88d5cb');
-    
+
     return Container(
-      padding: EdgeInsets.only(top:35, left:20, right: 20),
-      child: Column(
-        children: <Widget>[
-          TextField(
-            focusNode: _focusNode,
-            obscureText: true,
-            decoration: InputDecoration(
-              border: UnderlineInputBorder(
-                borderSide: BorderSide(color: borderCo)
-              ),
-              focusedBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: Colors.grey)
-              ),
-              enabledBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: borderCo)
-              ),
-              labelText: 'Password',
-              labelStyle: TextStyle(
-                fontFamily: 'Arial',
-                fontWeight: FontWeight.bold,
-                color: Colors.grey,
-              )
-            ),
-          )
-        ],
-      )
-    );
+        padding: EdgeInsets.only(top: 35, left: 20, right: 20),
+        child: Column(
+          children: <Widget>[
+            TextField(
+              focusNode: _focusNode,
+              obscureText: true,
+              decoration: InputDecoration(
+                  border: UnderlineInputBorder(
+                      borderSide: BorderSide(color: borderCo)),
+                  focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.grey)),
+                  enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: borderCo)),
+                  labelText: 'Password',
+                  labelStyle: TextStyle(
+                    fontFamily: 'Arial',
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey,
+                  )),
+            )
+          ],
+        ));
   }
 
   ///Building the login Container which would be in an animated container for switching between the SignUp
-  Widget login(){
+  Widget login() {
     return Container(
-      child: Column(
-        children: <Widget>[
-          buildEmail(),
-          buildPassword()
-        ],
-      )
+        child: Column(
+      children: <Widget>[buildEmail(), buildPassword()],
+    ));
+  }
+
+  ///Building a rounded button for future use in code
+  Widget roundedButton(String text){
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 20, vertical:30),
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(color: HexColor('#88d5cb')),
+        borderRadius: BorderRadius.circular(20.0),
+        ),
+        height: 50.0,
+        child: Material(
+          borderRadius: BorderRadius.circular(20.0),
+          color: Colors.white,
+          elevation: 1,
+          child: GestureDetector(
+            onTap: () {},
+            child: Center(
+              child: Text(
+                text,
+                style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'Arial',
+                  fontSize: 20,
+                )
+              )
+            )
+          )
+        )
+      ),
     );
   }
 }
