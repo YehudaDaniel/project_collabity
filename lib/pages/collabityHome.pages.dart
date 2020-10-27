@@ -8,8 +8,10 @@ class CollabityHome extends StatefulWidget {
 class _CollabityHomeState extends State<CollabityHome> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Text('REER')
+    return Scaffold(
+      body: Center(
+        child: Text('Home'),
+      ),
     );
   }
 }

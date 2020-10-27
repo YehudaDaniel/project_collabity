@@ -1,37 +1,27 @@
 // import 'dart:convert';
 // import 'package:http/http.dart' as http;
-// import 'package:project_collabity/services/storage.services.dart';
 
 // class HttpServices {
 //   static bool _isDebug = true;
-//   static String _devURL = '192.168.1.19:3000';
-//   static Map<String, String> _defaultHeaders = {
-//     'Content-Type' : 'application/json'
-//   };
+//   static String _devUrl = '192.168.1.17:3000';
+//   static Map<String, String> _defaultHeaders = { 'Content-Type': 'application/json' };
 
 //   static String get serverURL {
-//     return _isDebug
-//     ? _devURL
+//     return _isDebug ?
+//       _devUrl
 //     :
-//     //Production Server
-//     'https://real-server.com';
+//       //if isDebug is false that means we are in production
+//       'https://real-server.com';
 //   }
 
-//   static Future<bool> login({Map<String, String> emailPass}) async {
+//   static Future<bool> login({ Map<String, String> emailPass }) async {
+    
 //     try {
 //       http.Response res = await http.post('$serverURL/login', body: emailPass);
-//       if (res.statusCode == ResponseStatus.Ok) {
+//       if(res.statusCode == ResponseStatus.Ok){
 //         Map<String, dynamic> resBody = jsonDecode(res.body);
-
-//         if (resBody['auth'].toString().toLowerCase() == 'true') {
-//           Map<String, dynamic> creds = 
-
-//           StorageH.setJSON(
-//               StoragePaths.LoginCred, UserCred.fromJSON(creds).toJSON());
-//           return true;
-//         }
 //       }
-//     } catch (ex) {
+//     } catch(ex) {
 //       print(ex);
 //     }
 //     return false;
@@ -54,20 +44,52 @@
 
 // }
 
+// class UserCred {
+//   String name;
+//   String password;
+
+//   UserCred(
+//     this.name,
+//     this.password
+//   );
+
+//   Map<String, dynamic> toJSON() {
+//     return {
+//       'name': name,
+//       'password': password,
+//     };
+//   }
+
+//   static UserCred fromJSON(Map<String, dynamic> json) {
+//     try {
+//       return UserCred(
+//         json['name'],
+//         json['password']
+//       );
+//     } catch(ex) {
+//       throw ex;
+//     }
+//   }
+
+//   @override
+//   String toString() {
+//     return toJSON().toString();
+//   }
+// }
+
 // class NewUserData {
 //   String password;
-//   String pinCode;
 
-//   NewUserData({this.password, this.pinCode});
+//   NewUserData({this.password});
 
 //   Map<String, String> toJSON() {
-//     return {'password': password, 'pinCode': pinCode};
+//     return {'password': password};
 //   }
 
 //   static NewUserData fromJSON(Map<String, dynamic> json) {
 //     return NewUserData(
-//         password: json['password'].toString(),
-//         pinCode: json['pinCode'].toString());
+//         password: json['password'].toString()
+//       );
 //   }
 // }
 
@@ -79,8 +101,7 @@
 //     {
 //       this.email,
 //       this.username
-//     }
-//   );
+//     });
 
 //   Map<String, String> toJSON() {
 //     return {
@@ -94,14 +115,6 @@
 //         email: json['email'].toString(),
 //         username: json['username'].toString()
 //       );
-//   }
-
-//   @override
-//   String toString() {
-//     return '''{ 
-//       email: ${email.toString()}, 
-//       username: ${username.toString()}
-//     }''';
 //   }
 // }
 
@@ -126,79 +139,6 @@
 //   }
 // }
 
-// class User {
-//   String email;
-//   String username;
-//   String password;
-//   String profileImage;
-//   int lastConnected;
-
-//   User(
-//     {
-//       this.username,
-//       this.password,
-//       this.email,
-//       this.profileImage,
-//       this.lastConnected
-//     }
-//   );
-
-//   Map<String, dynamic> toJSON() {
-//     return {
-//       'username': username,
-//       'password': password,
-//       'email': email,
-//       'profileImage': profileImage,
-//       'lastConnected': lastConnected
-//     };
-//   }
-
-//   static User fromJSON(Map<String, dynamic> json) {
-//     return User(
-//         username: json['username'],
-//         password: json['password'],
-//         email: json['email'],
-//         profileImage: json['profileImage'],
-//         lastConnected: json['lastConnected']);
-//   }
-
-//   @override
-//   String toString() {
-//     return toJSON().toString();
-//   }
-// }
-
-// class UserCred {
-//   // username password of client
-//   String email;
-//   String password;
-
-//   UserCred(this.email, this.password);
-
-//   Map<String, dynamic> toJSON() {
-//     return {
-//       'email': email,
-//       'password': password,
-//     };
-//   }
-
-//   static UserCred fromJSON(Map<String, dynamic> json) {
-//     try {
-//       return UserCred(
-//           json['email'],
-//           json['password']
-//         );
-//     } catch (ex) {
-//       throw ex;
-//     }
-//   }
-
-//   @override
-//   String toString() {
-//     return toJSON().toString();
-//   }
-// }
-
 // class ResponseStatus {
 //   static const int NoContent = 204;
 //   static const int NotFound = 404;
@@ -211,7 +151,6 @@
 //   static const int Accepted = 202;
 //   static const int Found = 302;
 // }
-
 
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -229,12 +168,18 @@ class HttpServices {
       'https://real-server.com';
   }
 
-  static Future<bool> login({ Map<String, String> emailPass }) async {
-    
+  static Future<bool> login({ Map<String, String> emailPass}) async {
     try {
       http.Response res = await http.post('$serverURL/login', body: emailPass);
       if(res.statusCode == ResponseStatus.Ok){
-        Map<String, dynamic> resBody = jsonDecode(res.body);
+        return true;
+
+        // if(resBody['email']){
+        //   Map<String, dynamic> creds = resBody['cred'];
+        //   creds['email'] = emailPass['email'];
+        //   creds['password'] = emailPass['password'];
+
+        // }
       }
     } catch(ex) {
       print(ex);
@@ -247,30 +192,32 @@ class HttpServices {
         headers: _defaultHeaders, body: jsonEncode(userCred.toJSON()));
 
     if (res.statusCode == ResponseStatus.Ok) {
-      Map<String, dynamic> resBody = jsonDecode(res.body);
+      // Map<String, dynamic> resBody = jsonDecode(res.body);
 
-      if (resBody['isCreated'].toString().toLowerCase() == 'true') {
-        return NewUserCred.fromJSON(resBody['user']);
-      }
+      // if (resBody['isCreated'].toString().toLowerCase() == 'true') {
+      //   return NewUserCred.fromJSON(resBody['user']);
+      // }
+
+      return null;
     }
-
-    return null;
+    //TODO: ask kobe to send back json so I would know what data is taken from the register attempt
+    return NewUserCred(NewUserInfo());
   }
 
 }
 
 class UserCred {
-  String name;
+  String email;
   String password;
 
   UserCred(
-    this.name,
+    this.email,
     this.password
   );
 
   Map<String, dynamic> toJSON() {
     return {
-      'name': name,
+      'email': email,
       'password': password,
     };
   }
@@ -278,7 +225,7 @@ class UserCred {
   static UserCred fromJSON(Map<String, dynamic> json) {
     try {
       return UserCred(
-        json['name'],
+        json['email'],
         json['password']
       );
     } catch(ex) {
@@ -292,65 +239,53 @@ class UserCred {
   }
 }
 
-class NewUserData {
-  String password;
-
-  NewUserData({this.password});
-
-  Map<String, String> toJSON() {
-    return {'password': password};
-  }
-
-  static NewUserData fromJSON(Map<String, dynamic> json) {
-    return NewUserData(
-        password: json['password'].toString()
-      );
-  }
-}
-
 class NewUserInfo {
   String email;
   String username;
+  String password;
 
   NewUserInfo(
     {
       this.email,
-      this.username
+      this.username,
+      this.password
     });
 
   Map<String, String> toJSON() {
     return {
       'email': email,
-      'username': username
+      'username': username,
+      'password': password
     };
   }
 
   static NewUserInfo fromJSON(Map<String, dynamic> json) {
     return NewUserInfo(
         email: json['email'].toString(),
-        username: json['username'].toString()
+        username: json['username'].toString(),
+        password: json['password'].toString()
       );
   }
 }
 
 class NewUserCred {
-  NewUserData data;
   NewUserInfo info;
 
-  NewUserCred(this.data, this.info);
+  NewUserCred(this.info);
 
   Map<String, dynamic> toJSON() {
-    return {'data': data.toJSON(), 'info': info.toJSON()};
+    return {'info': info.toJSON()};
   }
 
   static NewUserCred fromJSON(Map<String, dynamic> json) {
     return NewUserCred(
-        NewUserData.fromJSON(json['data']), NewUserInfo.fromJSON(json['info']));
+      NewUserInfo.fromJSON(json['info'])
+    );
   }
 
   @override
   String toString() {
-    return '{ data: ${data.toString()}, info: ${info.toString()}';
+    return '{ info: ${info.toString()}';
   }
 }
 
