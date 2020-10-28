@@ -1,157 +1,3 @@
-// import 'dart:convert';
-// import 'package:http/http.dart' as http;
-
-// class HttpServices {
-//   static bool _isDebug = true;
-//   static String _devUrl = '192.168.1.17:3000';
-//   static Map<String, String> _defaultHeaders = { 'Content-Type': 'application/json' };
-
-//   static String get serverURL {
-//     return _isDebug ?
-//       _devUrl
-//     :
-//       //if isDebug is false that means we are in production
-//       'https://real-server.com';
-//   }
-
-//   static Future<bool> login({ Map<String, String> emailPass }) async {
-    
-//     try {
-//       http.Response res = await http.post('$serverURL/login', body: emailPass);
-//       if(res.statusCode == ResponseStatus.Ok){
-//         Map<String, dynamic> resBody = jsonDecode(res.body);
-//       }
-//     } catch(ex) {
-//       print(ex);
-//     }
-//     return false;
-//   }
-
-//   static Future<NewUserCred> register({NewUserCred userCred}) async {
-//     http.Response res = await http.post('$serverURL/register',
-//         headers: _defaultHeaders, body: jsonEncode(userCred.toJSON()));
-
-//     if (res.statusCode == ResponseStatus.Ok) {
-//       Map<String, dynamic> resBody = jsonDecode(res.body);
-
-//       if (resBody['isCreated'].toString().toLowerCase() == 'true') {
-//         return NewUserCred.fromJSON(resBody['user']);
-//       }
-//     }
-
-//     return null;
-//   }
-
-// }
-
-// class UserCred {
-//   String name;
-//   String password;
-
-//   UserCred(
-//     this.name,
-//     this.password
-//   );
-
-//   Map<String, dynamic> toJSON() {
-//     return {
-//       'name': name,
-//       'password': password,
-//     };
-//   }
-
-//   static UserCred fromJSON(Map<String, dynamic> json) {
-//     try {
-//       return UserCred(
-//         json['name'],
-//         json['password']
-//       );
-//     } catch(ex) {
-//       throw ex;
-//     }
-//   }
-
-//   @override
-//   String toString() {
-//     return toJSON().toString();
-//   }
-// }
-
-// class NewUserData {
-//   String password;
-
-//   NewUserData({this.password});
-
-//   Map<String, String> toJSON() {
-//     return {'password': password};
-//   }
-
-//   static NewUserData fromJSON(Map<String, dynamic> json) {
-//     return NewUserData(
-//         password: json['password'].toString()
-//       );
-//   }
-// }
-
-// class NewUserInfo {
-//   String email;
-//   String username;
-
-//   NewUserInfo(
-//     {
-//       this.email,
-//       this.username
-//     });
-
-//   Map<String, String> toJSON() {
-//     return {
-//       'email': email,
-//       'username': username
-//     };
-//   }
-
-//   static NewUserInfo fromJSON(Map<String, dynamic> json) {
-//     return NewUserInfo(
-//         email: json['email'].toString(),
-//         username: json['username'].toString()
-//       );
-//   }
-// }
-
-// class NewUserCred {
-//   NewUserData data;
-//   NewUserInfo info;
-
-//   NewUserCred(this.data, this.info);
-
-//   Map<String, dynamic> toJSON() {
-//     return {'data': data.toJSON(), 'info': info.toJSON()};
-//   }
-
-//   static NewUserCred fromJSON(Map<String, dynamic> json) {
-//     return NewUserCred(
-//         NewUserData.fromJSON(json['data']), NewUserInfo.fromJSON(json['info']));
-//   }
-
-//   @override
-//   String toString() {
-//     return '{ data: ${data.toString()}, info: ${info.toString()}';
-//   }
-// }
-
-// class ResponseStatus {
-//   static const int NoContent = 204;
-//   static const int NotFound = 404;
-//   static const int BadRequest = 400;
-//   static const int Unauthorized = 401;
-//   static const int InternalError = 500;
-//   static const int NotImplemented = 501;
-//   static const int Ok = 200;
-//   static const int Created = 201;
-//   static const int Accepted = 202;
-//   static const int Found = 302;
-// }
-
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
@@ -189,7 +35,8 @@ class HttpServices {
 
   static Future<NewUserCred> register({NewUserCred userCred}) async {
     http.Response res = await http.post('$serverURL/register',
-        headers: _defaultHeaders, body: jsonEncode(userCred.toJSON()));
+        headers: _defaultHeaders, body: jsonEncode(userCred.toJSON())
+      );
 
     if (res.statusCode == ResponseStatus.Ok) {
       // Map<String, dynamic> resBody = jsonDecode(res.body);
@@ -200,8 +47,9 @@ class HttpServices {
 
       return null;
     }
-    //TODO: ask kobe to send back json so I would know what data is taken from the register attempt
-    return NewUserCred(NewUserInfo());
+    Map<String, dynamic> data = json.decode(res.body);
+    //TODO: ask kobe to send back json so I would know what data is taken from the register attempt - Done
+    return NewUserCred(NewUserInfo(username: data['isUsernameTaken'], email: data['isEmailTaken']));
   }
 
 }
@@ -240,8 +88,8 @@ class UserCred {
 }
 
 class NewUserInfo {
-  String email;
-  String username;
+  dynamic email;
+  dynamic username;
   String password;
 
   NewUserInfo(
@@ -261,10 +109,10 @@ class NewUserInfo {
 
   static NewUserInfo fromJSON(Map<String, dynamic> json) {
     return NewUserInfo(
-        email: json['email'].toString(),
-        username: json['username'].toString(),
-        password: json['password'].toString()
-      );
+      email: json['email'].toString(),
+      username: json['username'].toString(),
+      password: json['password'].toString()
+    );
   }
 }
 

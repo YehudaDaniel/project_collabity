@@ -27,6 +27,14 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
   String _signupPassword = '';
   String _signupRepeat = '';
 
+  //TextEditingController for each input
+  TextEditingController _lEmail = TextEditingController();
+  TextEditingController _lPassword = TextEditingController();
+  TextEditingController _sEmail = TextEditingController();
+  TextEditingController _sUsername = TextEditingController();
+  TextEditingController _sPassword = TextEditingController();
+  TextEditingController _sRepeat = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -157,13 +165,15 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
           buildInput(
             obscureText: false, 
             icon: Icons.mail, 
-            labelText:'EMAIL', 
+            labelText:'EMAIL',
+            control: _lEmail,
             change: (login) => setState(() => _loginEmail = login)
           ),
           buildInput(
             obscureText:true, 
             icon:Icons.lock, 
             labelText:'PASSWORD',
+            control: _lPassword,
             change: (login) => setState(() => _loginPassword = login)
           ),
           SizedBox(height: 15,),
@@ -236,24 +246,28 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
             obscureText:false, 
             icon:Icons.mail, 
             labelText:'Email',
+            control: _sEmail,
             change: (signup) => setState(() => _signupEmail = signup)
           ),
           buildInput(
             obscureText:false, 
             icon:Icons.account_circle, 
             labelText:'USERNAME',
+            control: _sUsername,
             change: (signup) => setState(() => _signupUsername = signup)
           ),
           buildInput(
             obscureText:true, 
             icon:Icons.lock, 
             labelText:'PASSWORD',
+            control: _sPassword,
             change: (signup) => setState(() => _signupPassword = signup)
           ),
           buildInput(
             obscureText:true, 
             icon:Icons.lock, 
             labelText:'REPEAT PASSWORD',
+            control: _sRepeat,
             change: (aa) => setState(() => _signupRepeat = aa)
           ),
           SizedBox(height: 15,),
@@ -298,9 +312,16 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
                     });
                   } else { 
                     Dialogs.hideLoadingSpinner(context);
-                    setState(() {
-                      err = 'User already taken.';
-                    });
+                    print(user.info.email);
+                    if(user.info.username){
+                      setState(() {
+                        err = 'Username already in use.';
+                      });
+                    }else if(user.info.email){
+                      setState(() {
+                        err = 'Email already in use.';
+                      });
+                    }
                   }
                 } else {
                   Dialogs.hideLoadingSpinner(context);
