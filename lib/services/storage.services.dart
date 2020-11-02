@@ -59,5 +59,5 @@ class StorageH {
 class StoragePaths {
   static final String _dataSaveKey = '@project_collaboty';
 
-  static final String LoginCred = '$_dataSaveKey:loginCred';
+  static final String loginCred = '$_dataSaveKey:loginCred';
 }

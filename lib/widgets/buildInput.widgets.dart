@@ -15,18 +15,18 @@ import 'package:flutter_ui_utils/flutter_ui_utils.dart';
             obscureText: obscureText,
             decoration: InputDecoration(
               prefixIcon: Icon(icon),
-                border: UnderlineInputBorder(
-                    borderSide: BorderSide(color: borderCo)),
-                focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey)),
-                enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: borderCo)),
-                labelText: labelText,
-                labelStyle: TextStyle(
-                  fontFamily: 'Arial',
-                  fontWeight: FontWeight.bold,
-                  color: Colors.grey,
-                )
+              border: UnderlineInputBorder(
+                  borderSide: BorderSide(color: borderCo)),
+              focusedBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: Colors.grey)),
+              enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: borderCo)),
+              labelText: labelText,
+              labelStyle: TextStyle(
+                fontFamily: 'Arial',
+                fontWeight: FontWeight.bold,
+                color: Colors.grey,
+              )
             ),
           )
         ],

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
-import 'package:project_collabity/pages/collabityHome.pages.dart';
+import 'package:project_collabity/pages/project.pages.dart';
 import 'package:project_collabity/services/http.services.dart';
 import 'package:project_collabity/utils/flutter_ui_utils.dart';
 import 'package:project_collabity/widgets/buildInput.widgets.dart';
@@ -192,7 +192,7 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
               color: Colors.white,
               shape: RoundedRectangleBorder(
                 side: BorderSide(color: HexColor('#88d5cb')),
-                borderRadius: BorderRadius.circular(10.0),
+                // borderRadius: BorderRadius.circular(10.0),
               ),
               onPressed: (EmailValidator.validate(_loginEmail) && _loginPassword.length >= 6) ?() async {
                   try {
@@ -206,7 +206,7 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
                       Dialogs.hideLoadingSpinner(context);
                       Navigator.of(context).pushReplacement(
                         MaterialPageRoute(
-                          builder: (BuildContext context) => CollabityHome()
+                          builder: (BuildContext context) => ProjectPage()
                         )
                       );
                     } else {
@@ -285,7 +285,7 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
               color: Colors.white,
               shape: RoundedRectangleBorder(
                 side: BorderSide(color: HexColor('#88d5cb')),
-                borderRadius: BorderRadius.circular(10.0)
+                // borderRadius: BorderRadius.circular(10.0)
               ),
               onPressed: () async {
                 Dialogs.showLoadingSpinner(context);

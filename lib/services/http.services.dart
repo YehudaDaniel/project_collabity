@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:async';
 import 'package:http/http.dart' as http;
 
 class HttpServices {
@@ -52,6 +53,26 @@ class HttpServices {
     return NewUserCred(NewUserInfo(username: data['isUsernameTaken'], email: data['isEmailTaken']));
   }
 
+  ///A function that asks for the features data to display in a future builder
+  static Future<List<Feature>> getFeatures() async {
+    var featureData = await http.get('$serverURL/project/features');
+    var jsonData = json.decode(featureData.body);
+
+    List<Feature> features = [];
+    for(var f in jsonData){
+      Feature feature = Feature(f);
+      features.add(feature);
+    }
+
+    return features;
+  }
+
+}
+
+class Feature {
+  final String content;
+
+  Feature(this.content);
 }
 
 class UserCred {
