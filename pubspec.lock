@@ -337,7 +337,7 @@ packages:
       name: zefyr
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.10.0"
+    version: "0.12.0"
 sdks:
   dart: ">=2.4.0 <3.0.0"
   flutter: ">=1.12.13+hotfix.5 <2.0.0"
