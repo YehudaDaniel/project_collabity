@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:project_collabity/pages/textField.pages.dart';
-// import 'package:provider/provider.dart';
+import 'package:project_collabity/pages/TextEditorWidget/textField.pages.dart';
 
 class EditorProvider extends ChangeNotifier {
   List<FocusNode> _nodes = [];

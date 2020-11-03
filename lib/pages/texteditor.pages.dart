@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:keyboard_visibility/keyboard_visibility.dart';
-import 'package:project_collabity/pages/statemanage.pages.dart';
-import 'package:project_collabity/pages/textField.pages.dart';
-import 'package:project_collabity/pages/toolbar.pages.dart';
+import 'package:project_collabity/pages/TextEditorWidget/statemanage.pages.dart';
+import 'package:project_collabity/pages/TextEditorWidget/textField.pages.dart';
+import 'package:project_collabity/pages/TextEditorWidget/toolbar.pages.dart';
 import 'package:provider/provider.dart';
 
 class TextEditorPage extends StatefulWidget {
@@ -42,113 +42,109 @@ class _TextEditorPageState extends State<TextEditorPage> {
       create: (context) => EditorProvider(),
       child: SafeArea(
         child: Scaffold(
-          body: Stack(
-            children: <Widget>[
-              Positioned(
-                top: 16,
-                left: 0,
-                right: 0,
-                bottom: 56,
-                child: Consumer<EditorProvider>(
-                  builder: (context, state, _) {
-                    return ListView.builder(
-                      itemCount: state.length,
-                      itemBuilder: (context, index) {
-                        return Focus(
-                          onFocusChange: (hasFocus) {
-                            if (hasFocus) state.setFocus(state.typeAt(index));
+          body: Container(
+            child: Column(
+              children:<Widget>[
+                Container(
+                  color: Colors.grey[200],
+                  child: Expanded(
+                    flex: 1,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        IconButton(
+                          onPressed:() {
+                            if(_isCollapsed){
+
+                            }else{
+                              setState(() {
+                                _isCollapsed = !_isCollapsed;
+                              });
+                            }
                           },
-                          child: SmartTextField(
-                            type: state.typeAt(index),
-                            controller: state.textAt(index),
-                            focusNode: state.nodeAt(index),
-                          )
-                        );
-                      }
-                    );
-                  }
+                          icon: Icon(
+                            _isCollapsed? Icons.keyboard_arrow_left : Icons.keyboard_arrow_up,
+                            size: 35,
+                          ),
+                        ),
+                        IconButton(
+                          onPressed:() {
+
+                          },
+                          icon: Icon(
+                            Icons.done,
+                            color: Colors.green,
+                            size: 30,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-              ),
-              if(showToolbar) Positioned(
-                bottom: 0,
-                left: 0,
-                right: 0,
-                child: Selector<EditorProvider, SmartTextType>(
-                  selector: (buildContext, state) => state.selectedType,
-                  builder: (context, selectedType, _) {
-                    return Toolbar(
-                      selectedType: selectedType,
-                      onSelected: Provider.of<EditorProvider>(context,
-                        listen: false).setType,
-                    );
-                  },
+                Container(
+                  color: Colors.grey[200],
+                  child: Expanded(
+                    flex: 1,
+                    child: _expandingCollapsingWidget(),
+                  ),
                 ),
-              )
-            ],
-          )
+                Expanded(
+                  flex: 7,
+                  child: _textEditorWidget(),
+                )
+              ],
+            ),
+          ),
         ),
       )
-      // home: Scaffold(
-      //   resizeToAvoidBottomInset: true,
-      //   body: SafeArea(
-      //     child: Container(
-      //       child: Column(
-      //         children:<Widget>[
-      //           Expanded(
-      //             flex: 1,
-      //             child: Row(
-      //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //               children: <Widget>[
-      //                 IconButton(
-      //                   onPressed:() {
-      //                     if(_isCollapsed){
+    );
+  }
 
-      //                     }else{
-      //                       setState(() {
-      //                         _isCollapsed = !_isCollapsed;
-      //                       });
-      //                     }
-      //                   },
-      //                   icon: Icon(
-      //                     _isCollapsed? Icons.keyboard_arrow_left : Icons.keyboard_arrow_up,
-      //                     size: 35,
-      //                   ),
-      //                 ),
-      //                 IconButton(
-      //                   onPressed:() {
-
-      //                   },
-      //                   icon: Icon(
-      //                     Icons.done,
-      //                     color: Colors.green,
-      //                     size: 30,
-      //                   ),
-      //                 ),
-      //               ],
-      //             ),
-      //           ),
-      //           Expanded(
-      //             flex: 1,
-      //             child: _expandingCollapsingWidget(),
-      //           ),
-      //           // Expanded(
-      //           //   flex: 5,
-      //           //   child: Container(
-      //           //     color: Colors.grey[200],
-      //           //     child: ZefyrScaffold(
-      //           //       child: ZefyrEditor(
-      //           //         padding: EdgeInsets.all(16),
-      //           //         controller: _controller,
-      //           //         focusNode: _focusNode,
-      //           //       ),
-      //           //     ),
-      //           //   ),
-      //           // ),
-      //         ],
-      //       ),
-      //     ),
-      //   ),
-      // )
+  Widget _textEditorWidget(){
+    return  Stack(
+      children: <Widget>[
+        Positioned(
+          top: 16,
+          left: 0,
+          right: 0,
+          bottom: 56,
+          child: Consumer<EditorProvider>(
+            builder: (context, state, _) {
+              return ListView.builder(
+                itemCount: state.length,
+                itemBuilder: (context, index) {
+                  return Focus(
+                    onFocusChange: (hasFocus) {
+                      if (hasFocus) state.setFocus(state.typeAt(index));
+                    },
+                    child: SmartTextField(
+                      type: state.typeAt(index),
+                      controller: state.textAt(index),
+                      focusNode: state.nodeAt(index),
+                    ),
+                  );
+                }
+              );
+            }
+          ),
+        ),
+        //An option to add a toolbar(use stack instead of column)
+        // if(showToolbar) Positioned(
+        //   bottom: 0,
+        //   left: 0,
+        //   right: 0,
+        //   child: Selector<EditorProvider, SmartTextType>(
+        //     selector: (buildContext, state) => state.selectedType,
+        //     builder: (context, selectedType, _) {
+        //       return Toolbar(
+        //         selectedType: selectedType,
+        //         onSelected: Provider.of<EditorProvider>(context,
+        //           listen: false).setType,
+        //       );
+        //     },
+        //   ),
+        // )
+      ],
     );
   }
 
@@ -191,16 +187,28 @@ class _TextEditorPageState extends State<TextEditorPage> {
           ),
           Container(
             width: MediaQuery.of(context).size.width,
-            child: FlatButton.icon(
-              
-              onPressed: (){
+            // child: FlatButton.icon(
+            //   onPressed: (){
+
+            //   },
+            //   icon: Icon(Icons.control_point),
+            //   label: Row(
+            //     children: <Widget>[
+            //       Text('asfaf'),
+            //       Icon(Icons.ac_unit)
+            //     ],
+            //   ),
+            // ),
+            child: FlatButton(
+              onPressed: () {
 
               },
-              icon: Icon(Icons.control_point),
-              label: Row(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Text('asfaf'),
-                  Icon(Icons.ac_unit)
+                  Icon(Icons.face),
+                  Text('Admins'),
+                  Icon(Icons.add),
                 ],
               ),
             ),

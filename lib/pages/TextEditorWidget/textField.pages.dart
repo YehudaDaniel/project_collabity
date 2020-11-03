@@ -27,12 +27,12 @@ extension SmartTextStyle on SmartTextType {
   EdgeInsets get padding {
     switch (this) {
       case SmartTextType.H1:
-        return EdgeInsets.fromLTRB(16, 24, 16, 8);
+        return EdgeInsets.fromLTRB(16, 20, 16, 5);
         break;
       case SmartTextType.BULLET:
-        return EdgeInsets.fromLTRB(24, 8, 16, 8);
+        return EdgeInsets.fromLTRB(20, 5, 16, 5);
       default:
-        return EdgeInsets.fromLTRB(16, 8, 16, 8);
+        return EdgeInsets.fromLTRB(16, 5, 16, 5);
     }
   }
 
@@ -71,7 +71,7 @@ class SmartTextField extends StatelessWidget {
       autofocus: true,
       keyboardType: TextInputType.multiline,
       maxLines: null,
-      cursorColor: Colors.teal,
+      cursorColor: Colors.black,
       textAlign: type.align,
       decoration: InputDecoration(
         border: InputBorder.none,
