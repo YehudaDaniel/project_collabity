@@ -52,6 +52,7 @@ extension SmartTextStyle on SmartTextType {
         return '\u2022 ';
         break;
       default:
+        return '';
     }
   }
 }
@@ -61,11 +62,13 @@ class SmartTextField extends StatelessWidget {
   final SmartTextType type;
   final TextEditingController controller;
   final FocusNode focusNode;
-  const SmartTextField({Key key, this.type, this.controller, this.focusNode}) : super(key: key);
+  final Function change;
+  const SmartTextField({Key key, this.type, this.controller, this.focusNode, this.change}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return TextField(
+      onChanged: change,
       controller: controller,
       focusNode: focusNode,
       autofocus: true,

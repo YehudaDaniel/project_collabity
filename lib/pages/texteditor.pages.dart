@@ -1,8 +1,9 @@
+//USAGE: the text editor page, creating a new project.
 import 'package:flutter/material.dart';
 import 'package:keyboard_visibility/keyboard_visibility.dart';
 import 'package:project_collabity/pages/TextEditorWidget/statemanage.pages.dart';
 import 'package:project_collabity/pages/TextEditorWidget/textField.pages.dart';
-import 'package:project_collabity/pages/TextEditorWidget/toolbar.pages.dart';
+import 'package:project_collabity/widgets/ModalTriggetButton.dart';
 import 'package:provider/provider.dart';
 
 class TextEditorPage extends StatefulWidget {
@@ -14,9 +15,15 @@ class TextEditorPage extends StatefulWidget {
 
 class _TextEditorPageState extends State<TextEditorPage> {
   
+  final _focusNode = FocusNode();
+
   TextEditingController _textEditingController = TextEditingController();
   bool _isCollapsed = true;
   bool showToolbar = false;
+
+  String _title = '';
+  List<String> content = [];
+
 
   @override
   void initState(){
@@ -31,34 +38,35 @@ class _TextEditorPageState extends State<TextEditorPage> {
   }
 
   @override
-  void dispose(){
-    KeyboardVisibilityNotification().dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<EditorProvider>(
       create: (context) => EditorProvider(),
       child: SafeArea(
         child: Scaffold(
           body: Container(
-            child: Column(
-              children:<Widget>[
-                Container(
-                  color: Colors.grey[200],
-                  child: Expanded(
-                    flex: 1,
+            child: InkWell( // a button on the whole screen to blur the textfields on tap.
+              onTap: () {
+                FocusScope.of(context).requestFocus(FocusNode());
+                if(_focusNode.hasFocus){
+                  setState(() {
+                    _isCollapsed = !_isCollapsed; // when the user taps on the inkwell, the collapsingwidget would close.
+                  });
+                }
+              },
+              child: Column(
+                children:<Widget>[
+                  Container(
+                    color: Colors.grey[200],
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                         IconButton(
                           onPressed:() {
                             if(_isCollapsed){
-
+                              // if the collapsingwidget is collapsed, the button would be used to go back to the projects list page.
                             }else{
                               setState(() {
-                                _isCollapsed = !_isCollapsed;
+                                _isCollapsed = !_isCollapsed; // otherwise it would be used to collapse the widget.
                               });
                             }
                           },
@@ -69,7 +77,7 @@ class _TextEditorPageState extends State<TextEditorPage> {
                         ),
                         IconButton(
                           onPressed:() {
-
+                            // when the user done creating the project, a test will run on the data and a new project would be created.
                           },
                           icon: Icon(
                             Icons.done,
@@ -80,19 +88,14 @@ class _TextEditorPageState extends State<TextEditorPage> {
                       ],
                     ),
                   ),
-                ),
-                Container(
-                  color: Colors.grey[200],
-                  child: Expanded(
-                    flex: 1,
-                    child: _expandingCollapsingWidget(),
+                  Container(
+                    padding: EdgeInsets.all(10),
+                    color: Colors.grey[200],
+                    child: _expandingCollapsingWidget() // the expanding and collapsing widget at the top of the screen.
                   ),
-                ),
-                Expanded(
-                  flex: 7,
-                  child: _textEditorWidget(),
-                )
-              ],
+                  Expanded(child: _textEditorWidget()) // the special text editor under the collapsingWidget.
+                ],
+              ),
             ),
           ),
         ),
@@ -100,6 +103,7 @@ class _TextEditorPageState extends State<TextEditorPage> {
     );
   }
 
+  // The text editor widget, creates the text editor with the textfields.
   Widget _textEditorWidget(){
     return  Stack(
       children: <Widget>[
@@ -121,6 +125,10 @@ class _TextEditorPageState extends State<TextEditorPage> {
                       type: state.typeAt(index),
                       controller: state.textAt(index),
                       focusNode: state.nodeAt(index),
+                      change: (value) {
+                        content.add(value);
+                        print(content); 
+                      },
                     ),
                   );
                 }
@@ -148,10 +156,12 @@ class _TextEditorPageState extends State<TextEditorPage> {
     );
   }
 
+  // The expanding and collapsing widget.
   Widget _expandingCollapsingWidget(){
     return _isCollapsed? 
       GestureDetector(
         onTap: (){
+          _focusNode.requestFocus();
           setState(() {
             _isCollapsed = !_isCollapsed;
           });
@@ -159,19 +169,29 @@ class _TextEditorPageState extends State<TextEditorPage> {
         child: Container(
           alignment: Alignment.topLeft,
           padding: EdgeInsets.only(left:15),
-          child: Text(
-            'CTitle...',
-            style: TextStyle(
-              color: Colors.grey,
-              fontSize: 30
+          child: (_title.length > 0)? Text(
+              _title,
+              style: TextStyle(
+                fontSize: 30
+              )
             )
-          ),
+          :
+            Text(
+              'Title...',
+              style: TextStyle(
+                color: Colors.grey,
+                fontSize: 30
+              )
+            )
         ),
       )
     :
       Column(
         children:<Widget>[
           TextField(
+            focusNode: _focusNode,
+            onChanged: (title) =>  setState(() => _title = title),
+            autofocus: true,
             controller: _textEditingController,
             decoration: InputDecoration(
               border: InputBorder.none,
@@ -187,33 +207,23 @@ class _TextEditorPageState extends State<TextEditorPage> {
           ),
           Container(
             width: MediaQuery.of(context).size.width,
-            // child: FlatButton.icon(
-            //   onPressed: (){
-
-            //   },
-            //   icon: Icon(Icons.control_point),
-            //   label: Row(
-            //     children: <Widget>[
-            //       Text('asfaf'),
-            //       Icon(Icons.ac_unit)
-            //     ],
-            //   ),
-            // ),
             child: FlatButton(
               onPressed: () {
 
               },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Icon(Icons.face),
-                  Text('Admins'),
-                  Icon(Icons.add),
-                ],
-              ),
+              child: Theme(
+                data: Theme.of(context).copyWith(canvasColor: Colors.transparent),
+                child: ModalTriggerButton()
+              )
             ),
           )
         ]
       );
+  }
+
+  @override
+  void dispose(){
+    KeyboardVisibilityNotification().dispose();
+    super.dispose();
   }
 }

@@ -268,7 +268,7 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
             icon:Icons.lock, 
             labelText:'REPEAT PASSWORD',
             control: _sRepeat,
-            change: (aa) => setState(() => _signupRepeat = aa)
+            change: (signup) => setState(() => _signupRepeat = signup)
           ),
           SizedBox(height: 15,),
           SizedBox(

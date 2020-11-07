@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:async';
 import 'package:http/http.dart' as http;
+import 'package:project_collabity/utils/User.dart';
 
 class HttpServices {
   static bool _isDebug = true;
@@ -67,6 +68,25 @@ class HttpServices {
     return features;
   }
 
+  //A function that gets collaborators from the server for adding to the project.
+  static Future<List<User>> getCollaborators() async {
+    try{
+      final res = await http.get('http://jsonplaceholder.typicode.com/users');
+      if(res.statusCode == 200){
+        List<User> list = parseUsers(res.body);
+        return list;
+      }else{
+        throw Exception('Error');
+      }
+    }catch(ex){
+      throw Exception(ex.toString());
+    }
+  }
+
+  static List<User> parseUsers(String resBody){
+    final parsed = json.decode(resBody).cast<Map<String, dynamic>>();
+    return parsed.map<User>((json) => User.fromJson(json)).toList();
+  }
 }
 
 class Feature {
