@@ -15,6 +15,7 @@ class TextEditorPage extends StatefulWidget {
 
 class _TextEditorPageState extends State<TextEditorPage> {
   
+  List _collabsList = [];
   final _focusNode = FocusNode();
 
   TextEditingController _textEditingController = TextEditingController();
@@ -22,7 +23,7 @@ class _TextEditorPageState extends State<TextEditorPage> {
   bool showToolbar = false;
 
   String _title = '';
-  List<String> content = [];
+  List<Map<String, String>> content = [];
 
 
   @override
@@ -64,6 +65,7 @@ class _TextEditorPageState extends State<TextEditorPage> {
                           onPressed:() {
                             if(_isCollapsed){
                               // if the collapsingwidget is collapsed, the button would be used to go back to the projects list page.
+                              Navigator.pop(context);
                             }else{
                               setState(() {
                                 _isCollapsed = !_isCollapsed; // otherwise it would be used to collapse the widget.
@@ -78,9 +80,10 @@ class _TextEditorPageState extends State<TextEditorPage> {
                         IconButton(
                           onPressed:() {
                             // when the user done creating the project, a test will run on the data and a new project would be created.
+                            
                           },
                           icon: Icon(
-                            Icons.done,
+                            Icons.check,
                             color: Colors.green,
                             size: 30,
                           ),
@@ -126,8 +129,14 @@ class _TextEditorPageState extends State<TextEditorPage> {
                       controller: state.textAt(index),
                       focusNode: state.nodeAt(index),
                       change: (value) {
-                        content.add(value);
-                        print(content); 
+                        if(!state.textAt(index).text.startsWith('\n')){
+                          if(index > content.length || content.isEmpty){
+                            content.insert(index, {"line": value});
+                          }else{
+                            content[index] = {"line": value};
+                          }
+                        }
+                        print(content);
                       },
                     ),
                   );
@@ -167,6 +176,8 @@ class _TextEditorPageState extends State<TextEditorPage> {
           });
         },
         child: Container(
+          color: Colors.grey[200],
+          width: MediaQuery.of(context).size.width,
           alignment: Alignment.topLeft,
           padding: EdgeInsets.only(left:15),
           child: (_title.length > 0)? Text(
@@ -213,7 +224,10 @@ class _TextEditorPageState extends State<TextEditorPage> {
               },
               child: Theme(
                 data: Theme.of(context).copyWith(canvasColor: Colors.transparent),
-                child: ModalTriggerButton()
+                child: ModalTriggerButton(
+                  collabsList: [],
+                  changeCallback: (List<String> newList) => setState(() => _collabsList = newList)
+                )
               )
             ),
           )

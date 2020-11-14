@@ -1,6 +1,7 @@
 //A widget which provides the button for the texteditor page for triggering the modalbox sheet, for adding collaborators.
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:project_collabity/services/http.services.dart';
 import 'package:project_collabity/utils/User.dart';
 
@@ -21,14 +22,20 @@ class Debouncer {
 }
 
 class ModalTriggerButton extends StatefulWidget {
+  final Function(List<String>) changeCallback;
+  final List<String> collabsList;
+
+  ModalTriggerButton({ this.changeCallback, this.collabsList });
 
   @override
   _ModalTriggerButtonState createState() => _ModalTriggerButtonState();
 }
 
 class _ModalTriggerButtonState extends State<ModalTriggerButton> {
+  final List<String> collabsList = [];
 
   final _focusNode = FocusNode();
+
   //A variable to hold the list of users
   final _debouncer = Debouncer(milliseconds: 500);
   List<User> users = List();
@@ -69,7 +76,7 @@ class _ModalTriggerButtonState extends State<ModalTriggerButton> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          Icon(Icons.check_circle),
+          Icon(collabsList.length > 0? Icons.check_circle : Icons.add_circle_outline),
           Text(
             'Add collaborators',
             style: TextStyle(
@@ -87,7 +94,7 @@ class _ModalTriggerButtonState extends State<ModalTriggerButton> {
   //TODO: fix ~ when touching outside the bottom sheet, make it dismiss.
   //TODO: when textfield is focus, let bottomsheet rise up to avoid keyboard.
   _modalBottomSheet(context){
-    showModalBottomSheet(context: context,
+    showModalBottomSheet<void>(context: context,
     isScrollControlled: true,
     isDismissible: true,
     builder: (BuildContext context) {
@@ -124,43 +131,81 @@ class _ModalTriggerButtonState extends State<ModalTriggerButton> {
                   ),
                 ),
                 Expanded(
+                  //TODO: when selecting a collaborator, pop him to the top of the list.
+                  //TODO: display the garbage button only on selected items
                   child: ListView.builder(
                     controller: scrollController,
                     padding: EdgeInsets.all(10),
                     itemCount:  filteredUsers.length,
                     itemBuilder: (BuildContext context, int index){
-                      return FlatButton(
-                        onPressed: (){
-
-                        },
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Padding(
-                            padding: EdgeInsets.all(10),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Text(
-                                  filteredUsers[index].name,
-                                  textAlign: TextAlign.left,
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.black
-                                  )
-                                ),
-                                SizedBox(height: 5),
-                                Text(
-                                  filteredUsers[index].email,
-                                  textAlign: TextAlign.left,
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.grey
-                                  )
-                                ),
-                              ],
+                      return Slidable(
+                        actionPane: SlidableDrawerActionPane(),
+                        child: FlatButton(
+                          onPressed: (){
+                            setState(() {
+                              if(!collabsList.contains(filteredUsers[index].name)){
+                                collabsList.add(filteredUsers[index].name);
+                                widget.changeCallback(collabsList);
+                              }
+                            });
+                            print(collabsList);
+                          },
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Padding(
+                              padding: EdgeInsets.all(10),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children:<Widget>[
+                                  Padding(
+                                    padding: EdgeInsets.only(right: 10),
+                                    child: Icon(
+                                      Icons.delete,
+                                      size: 25,
+                                    ),
+                                  ),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      Text(
+                                        filteredUsers[index].name,
+                                        textAlign: TextAlign.left,
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          color: Colors.black
+                                        )
+                                      ),
+                                      SizedBox(height: 5),
+                                      Text(
+                                        filteredUsers[index].email,
+                                        textAlign: TextAlign.left,
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          color: Colors.grey
+                                        )
+                                      ),
+                                    ],
+                                  ),
+                                ]
+                              ),
                             ),
                           ),
                         ),
+                        actions: <Widget>[
+                          IconSlideAction(
+                            icon: Icons.cancel,
+                            color: Colors.red[200],
+                            onTap: (){
+                              if(collabsList.contains(filteredUsers[index].name)){
+                                setState(() {
+                                  collabsList.remove(filteredUsers[index].name);
+                                });
+                                print(collabsList);
+                              }
+                            },
+                          ),
+                        ],
+                        key: ObjectKey(filteredUsers),
                       );
                     },
                   )

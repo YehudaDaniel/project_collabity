@@ -18,7 +18,10 @@ class HttpServices {
 
   static Future<bool> login({ Map<String, String> emailPass}) async {
     try {
-      http.Response res = await http.post('$serverURL/login', body: emailPass);
+      http.Response res = await http.post(
+        '$serverURL/login',
+        body: emailPass
+      );
       if(res.statusCode == ResponseStatus.Ok){
         return true;
 
@@ -36,9 +39,11 @@ class HttpServices {
   }
 
   static Future<NewUserCred> register({NewUserCred userCred}) async {
-    http.Response res = await http.post('$serverURL/register',
-        headers: _defaultHeaders, body: jsonEncode(userCred.toJSON())
-      );
+    http.Response res = await http.post(
+      '$serverURL/register',
+      headers: _defaultHeaders,
+      body: jsonEncode(userCred.toJSON())
+    );
 
     if (res.statusCode == ResponseStatus.Ok) {
       // Map<String, dynamic> resBody = jsonDecode(res.body);
@@ -83,6 +88,24 @@ class HttpServices {
     }
   }
 
+  //A function for sending the data of a new project creation
+  static Future<bool> createProject({ NewProjectData project }) async {
+    try{
+      http.Response res = await http.post(
+        '$serverURL/project/createProject',
+        headers: _defaultHeaders,
+        body: jsonEncode(project.toJSON())
+      );
+
+      if(res.statusCode == ResponseStatus.Ok){
+        return true;
+      }
+    }catch(ex){
+      print(ex);
+    }
+    return false;
+  }
+
   static List<User> parseUsers(String resBody){
     final parsed = json.decode(resBody).cast<Map<String, dynamic>>();
     return parsed.map<User>((json) => User.fromJson(json)).toList();
@@ -95,6 +118,7 @@ class Feature {
   Feature(this.content);
 }
 
+//User credentials for logging in
 class UserCred {
   String email;
   String password;
@@ -128,6 +152,7 @@ class UserCred {
   }
 }
 
+//A new user info for a new sign up
 class NewUserInfo {
   dynamic email;
   dynamic username;
@@ -156,7 +181,7 @@ class NewUserInfo {
     );
   }
 }
-
+//New user credentials creation
 class NewUserCred {
   NewUserInfo info;
 
@@ -175,6 +200,39 @@ class NewUserCred {
   @override
   String toString() {
     return '{ info: ${info.toString()}';
+  }
+}
+
+//A new project creation
+class NewProjectData {
+  String title;
+  List<String> collabsList;
+  List<Map<String, String>> content;
+
+  NewProjectData(
+    this.title,
+    this.collabsList,
+    this.content
+  );
+
+    Map<String, dynamic> toJSON() {
+    return {
+      'title': title,
+      'collabsList': collabsList,
+      'content': content
+    };
+  }
+
+  static NewProjectData fromJSON(Map<String, dynamic> json) {
+    try {
+      return NewProjectData(
+        json['title'],
+        json['collabsList'],
+        json['content']
+      );
+    } catch(ex) {
+      throw ex;
+    }
   }
 }
 

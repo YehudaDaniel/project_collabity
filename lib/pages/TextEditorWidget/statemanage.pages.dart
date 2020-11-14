@@ -12,11 +12,11 @@ class EditorProvider extends ChangeNotifier {
     insert(index: 0);
   }
 
-  int get length => _text.length;
-  int get focus => _nodes.indexWhere((node) => node.hasFocus);
-  FocusNode nodeAt(int index) => _nodes.elementAt(index);
-  TextEditingController textAt(int index) => _text.elementAt(index);
-  SmartTextType typeAt(int index) => _types.elementAt(index);
+  int get length => _text.length; // return the number of text blocks we have
+  int get focus => _nodes.indexWhere((node) => node.hasFocus); // returns the index of the block that has the current focus
+  FocusNode nodeAt(int index) => _nodes.elementAt(index); // returns the FocusNode at a certain index
+  TextEditingController textAt(int index) => _text.elementAt(index); // returns the TextEditingController at a certain index
+  SmartTextType typeAt(int index) => _types.elementAt(index); // returns the SmartTextType at a certain inedx
 
   void setType(SmartTextType type) {
     if (selectedType == type) {
@@ -36,7 +36,7 @@ class EditorProvider extends ChangeNotifier {
 
   void insert({int index, String text, SmartTextType type = SmartTextType.T}){
     final TextEditingController controller = TextEditingController(
-      text: '\u200B' + (text ?? '')
+      text: '\u200B' + (text?? '')
     );
     controller.addListener(() {
       if (!controller.text.startsWith('\u200B')) {

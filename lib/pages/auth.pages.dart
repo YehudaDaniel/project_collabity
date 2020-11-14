@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:project_collabity/pages/project.pages.dart';
+import 'package:project_collabity/pages/projectsList.pages.dart';
 import 'package:project_collabity/services/http.services.dart';
 import 'package:project_collabity/utils/flutter_ui_utils.dart';
 import 'package:project_collabity/widgets/buildInput.widgets.dart';
@@ -206,7 +207,7 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
                       Dialogs.hideLoadingSpinner(context);
                       Navigator.of(context).pushReplacement(
                         MaterialPageRoute(
-                          builder: (BuildContext context) => ProjectPage()
+                          builder: (BuildContext context) => ProjectsList()
                         )
                       );
                     } else {

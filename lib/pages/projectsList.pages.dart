@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:project_collabity/pages/texteditor.pages.dart';
+import 'package:project_collabity/utils/flutter_ui_utils.dart';
 
 class ProjectsList extends StatefulWidget {
   @override
@@ -27,30 +29,35 @@ class _ProjectsListState extends State<ProjectsList> {
           left: 0,
           child: Container(
             width: size.width,
-            height: 70,
+            height: 60,
             // color: Colors.blue,
             child: Stack(
               children: <Widget>[
                 CustomPaint(
-                  size: Size(size.width, 70),
+                  size: Size(size.width, 60),
                   painter: BNBCustomPainter(),
                 ),
                 Center(
-                  heightFactor: 0.1,
+                  heightFactor: 0.3,
                   child: FloatingActionButton(
-                    onPressed: () {},
-                    backgroundColor: Colors.orange,
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => TextEditorPage())
+                      );
+                    },
+                    backgroundColor: HexColor('#88d5cb'),
                     child: Icon( 
                       Icons.add,
-                      size: 55,
-                      color: Colors.black
+                      size: 50,
+                      color: Colors.grey[300]
                     ),
                     elevation: 1,
                   ),
                 ),
                 // Container(
                 //   width: size.width,
-                //   height: 70,
+                //   height: 60,
                 //   child: Row(
                 //     children: <Widget>[
                 //       IconButton(icon: null, onPressed: null,)

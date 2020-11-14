@@ -14,7 +14,7 @@ extension SmartTextStyle on SmartTextType {
         return TextStyle(
           fontSize: 16.0,
           fontStyle: FontStyle.italic,
-          color: Colors.white70
+          color: Colors.black
         );
       case SmartTextType.H1:
         return TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold);
@@ -52,7 +52,6 @@ extension SmartTextStyle on SmartTextType {
         return '\u2022 ';
         break;
       default:
-        return '';
     }
   }
 }
