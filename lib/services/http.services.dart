@@ -16,10 +16,11 @@ class HttpServices {
       'https://real-server.com';
   }
 
+  ///login post function
   static Future<bool> login({ Map<String, String> emailPass}) async {
     try {
       http.Response res = await http.post(
-        '$serverURL/login',
+        '$serverURL/app/login',
         body: emailPass
       );
       if(res.statusCode == ResponseStatus.Ok){
@@ -38,9 +39,10 @@ class HttpServices {
     return false;
   }
 
+  ///register post function
   static Future<NewUserCred> register({NewUserCred userCred}) async {
     http.Response res = await http.post(
-      '$serverURL/register',
+      '$serverURL/app/register',
       headers: _defaultHeaders,
       body: jsonEncode(userCred.toJSON())
     );
@@ -59,21 +61,41 @@ class HttpServices {
     return NewUserCred(NewUserInfo(username: data['isUsernameTaken'], email: data['isEmailTaken']));
   }
 
-  ///A function that asks for the features data to display in a future builder
-  static Future<List<Feature>> getFeatures() async {
-    var featureData = await http.get('$serverURL/project/features');
-    var jsonData = json.decode(featureData.body);
+  //A function for sending the data of a new project creation
+  static Future<NewProjectData> createProject({ NewProjectData project }) async {
+    http.Response res = await http.post(
+      '$serverURL/project/createProject',
+      headers: _defaultHeaders,
+      body: jsonEncode(project.toJSON())
+    );
 
-    List<Feature> features = [];
-    for(var f in jsonData){
-      Feature feature = Feature(f);
-      features.add(feature);
+    if(res.statusCode == ResponseStatus.Ok){
+      return null;
     }
-
-    return features;
+    // Map<String, dynamic> data = json.decode(res.body);
+    return NewProjectData();
   }
 
-  //A function that gets collaborators from the server for adding to the project.
+  ///projects list get function
+  static Future<List<ProjectData>> projectsList({ProjectData projectData}) async {
+    http.Response res = await http.get('$serverURL/app/project');
+    var jsonData = json.decode(res.body);
+
+    List<ProjectData> projects = [];
+    for(var f in jsonData){
+      ProjectData project = ProjectData(f['title'], f['collaborators'], f['content']);
+      projects.add(project);
+    }
+
+    return projects;
+  }
+
+  static List<User> parseUsers(String resBody){
+    final parsed = json.decode(resBody).cast<Map<String, dynamic>>();
+    return parsed.map<User>((json) => User.fromJson(json)).toList();
+  }
+
+  //A function that gets collaborators from the server for adding to the project(ModalBottomSheet).
   static Future<List<User>> getCollaborators() async {
     try{
       final res = await http.get('http://jsonplaceholder.typicode.com/users');
@@ -88,35 +110,21 @@ class HttpServices {
     }
   }
 
-  //A function for sending the data of a new project creation
-  static Future<bool> createProject({ NewProjectData project }) async {
-    try{
-      http.Response res = await http.post(
-        '$serverURL/project/createProject',
-        headers: _defaultHeaders,
-        body: jsonEncode(project.toJSON())
-      );
+  ///A function that asks for the features data to display in a future builder
+  static Future<List<Feature>> getFeatures() async {
+    var featureData = await http.get('$serverURL/project/features');
+    var jsonData = json.decode(featureData.body);
 
-      if(res.statusCode == ResponseStatus.Ok){
-        return true;
-      }
-    }catch(ex){
-      print(ex);
+    List<Feature> features = [];
+    for(var f in jsonData){
+      Feature feature = Feature(f);
+      features.add(feature);
     }
-    return false;
-  }
 
-  static List<User> parseUsers(String resBody){
-    final parsed = json.decode(resBody).cast<Map<String, dynamic>>();
-    return parsed.map<User>((json) => User.fromJson(json)).toList();
+    return features;
   }
 }
 
-class Feature {
-  final String content;
-
-  Feature(this.content);
-}
 
 //User credentials for logging in
 class UserCred {
@@ -209,11 +217,11 @@ class NewProjectData {
   List<String> collabsList;
   List<Map<String, String>> content;
 
-  NewProjectData(
+  NewProjectData({
     this.title,
     this.collabsList,
     this.content
-  );
+  });
 
     Map<String, dynamic> toJSON() {
     return {
@@ -226,14 +234,28 @@ class NewProjectData {
   static NewProjectData fromJSON(Map<String, dynamic> json) {
     try {
       return NewProjectData(
-        json['title'],
-        json['collabsList'],
-        json['content']
+        title: json['title'].toString(),
+        collabsList: json['collabsList'],
+        content: json['content'.toString()]
       );
     } catch(ex) {
       throw ex;
     }
   }
+}
+
+class Feature {
+  final String content;
+
+  Feature(this.content);
+}
+
+class ProjectData {
+  final String title;
+  final List<dynamic> collabsList;
+  final String content;
+
+  ProjectData(this.title, this.collabsList, this.content);
 }
 
 class ResponseStatus {

@@ -51,7 +51,8 @@ extension SmartTextStyle on SmartTextType {
       case SmartTextType.BULLET:
         return '\u2022 ';
         break;
-      default:
+      default: 
+        return '';
     }
   }
 }

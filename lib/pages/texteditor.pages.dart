@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:keyboard_visibility/keyboard_visibility.dart';
 import 'package:project_collabity/pages/TextEditorWidget/statemanage.pages.dart';
 import 'package:project_collabity/pages/TextEditorWidget/textField.pages.dart';
+import 'package:project_collabity/services/http.services.dart';
+import 'package:project_collabity/utils/flutter_ui_utils.dart';
 import 'package:project_collabity/widgets/ModalTriggetButton.dart';
 import 'package:provider/provider.dart';
 
@@ -78,9 +80,30 @@ class _TextEditorPageState extends State<TextEditorPage> {
                           ),
                         ),
                         IconButton(
-                          onPressed:() {
+                          onPressed:() async {
                             // when the user done creating the project, a test will run on the data and a new project would be created.
-                            
+                            Dialogs.showLoadingSpinner(context);
+                            if(_title.length > 0 && content.length > 0){
+                              NewProjectData project = await HttpServices.createProject(
+                                project: NewProjectData(
+                                  title: _title,
+                                  collabsList: _collabsList,
+                                  content: content
+                                )
+                              );
+                              Dialogs.hideLoadingSpinner(context);
+                              if(project == null) { 
+                                Dialogs.hideLoadingSpinner(context);
+                                Dialogs.showAlert(context, 'Registered successfully');
+                                Navigator.pop(context);
+                              }else{
+                                Dialogs.hideLoadingSpinner(context);
+                                Dialogs.showAlert(context, 'Unable to publish project.');
+                              }
+                            }else{
+                              Dialogs.hideLoadingSpinner(context);
+                              Dialogs.showAlert(context, 'Something went wrong...');
+                            }
                           },
                           icon: Icon(
                             Icons.check,

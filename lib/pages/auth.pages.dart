@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
-import 'package:project_collabity/pages/project.pages.dart';
 import 'package:project_collabity/pages/projectsList.pages.dart';
 import 'package:project_collabity/services/http.services.dart';
 import 'package:project_collabity/utils/flutter_ui_utils.dart';
@@ -336,7 +335,7 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
     );
   }
 
-  ///checks if all of the input's values are valid and return true if they are
+  ///checks if all of the input's values are valid and returns true if they are
   bool check() {
     bool res = true;
     if(!EmailValidator.validate(_signupEmail)) {

@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:project_collabity/pages/auth.pages.dart';
 import 'package:project_collabity/pages/projectsList.pages.dart';
-// import 'package:project_collabity/pages/auth.pages.dart';
-// import 'package:project_collabity/pages/project.pages.dart';
-// import 'package:project_collabity/pages/texteditor.pages.dart';
 import 'package:project_collabity/services/theme.services.dart';
 
 void main() => runApp(AppRoot());
@@ -15,9 +12,10 @@ class AppRoot extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: defaultTheme,
-      // home: AuthPage()
+      home: AuthPage()
       // home: ProjectPage()
-      home: ProjectsList()
+      // home: ProjectsList()
+      // home: ProjectsList(),
     );
   }
 } 
