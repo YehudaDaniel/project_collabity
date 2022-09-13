@@ -1,6 +1,6 @@
 # project_collabity
 
-A new Flutter project.
+Sharing your new ideas together in one place.
 
 ## Getting Started
 
